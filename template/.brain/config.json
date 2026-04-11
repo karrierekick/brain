@@ -1,0 +1,29 @@
+{
+  "version": "2.0",
+  "project": "",
+  "reader": {
+    "maxAdditionalFilesBeforeCode": 3
+  },
+  "domains": [],
+  "audit": {
+    "intervalDays": 14
+  },
+  "review": {
+    "defaultDaysByStatus": {
+      "aktiv": 60,
+      "beta": 30,
+      "eingestellt": 180
+    }
+  },
+  "capture": {
+    "autoSafeEnabled": true,
+    "confirmDefault": true,
+    "minFactsForNewDomain": 3
+  },
+  "files": {
+    "core": "CLAUDE.md",
+    "private": "PRIVATE.md",
+    "domains": ".brain/domains/",
+    "glossary": ".brain/glossary.md"
+  }
+}
