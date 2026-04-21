@@ -2,6 +2,13 @@
 
 Versionshistorie des Brain-Frameworks. Architektur-Rationale siehe [DESIGN.md](./DESIGN.md).
 
+## [2.3] – 2026-04-21
+
+### Added
+- **Projekt-spezifische brain-Befehle** – Jede Datei `.brain/prompts/<befehl>.md` definiert automatisch `brain <befehl>`. Damit Cursor den Trigger zuverlässig erkennt, muss der Befehl zusätzlich in der Liste in `PROTOCOL.md` und in der `description` der Rule `.cursor/rules/brain-protocol.mdc` eintragen werden.
+- **Rule-Template generischer formuliert** – `description` nennt jetzt explizit alle brain-Befehle (init/capture/audit + Platzhalter für projekt-spezifische), damit Cursors Rule-Selector bei jedem `brain …`-Prompt zieht. `alwaysApply: true` bleibt.
+- **`SKILL.md` abgegrenzt** – klare Trennung: Skill behandelt nur `brain install` / `brain upgrade`; Knowledge-Operationen laufen über die projekteigene Rule. Zusätzlich: Beim Upgrade werden nur die vier Framework-Prompts überschrieben; projekt-spezifische Prompts bleiben erhalten.
+
 ## [2.2] – 2026-04-20
 
 ### Changed

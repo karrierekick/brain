@@ -1,6 +1,17 @@
 ---
-description: Brain Protocol – Wissensbasis vor Code-Suche nutzen, Knowledge-Operationen kennen
+description: "Brain-Wissensbasis: bei jedem brain-Befehl (brain init, brain capture, brain audit, ggf. projekt-spezifische wie brain check) sowie bei Fragen zu Domänen, Glossar oder Wissensstandards aktiv. Domänen-Dateien unter .brain/domains/ nutzen statt zu raten."
+globs:
+  - ".brain/**"
 alwaysApply: true
 ---
 
-Lies `.brain/PROTOCOL.md` und handle entsprechend.
+Lies [`.brain/PROTOCOL.md`](mdc:.brain/PROTOCOL.md) und handle entsprechend.
+
+Bei einem brain-Befehl den passenden Prompt aus `.brain/prompts/` laden und Schritt für Schritt ausführen:
+
+- `brain init` → `.brain/prompts/init.md`
+- `brain capture` → `.brain/prompts/capture.md`
+- `brain audit` → `.brain/prompts/audit.md`
+- Weitere Befehle: `brain <name>` → `.brain/prompts/<name>.md` (projekt-spezifisch)
+
+Wenn die Prompt-Datei fehlt: dem User mitteilen, dass der Befehl im aktuellen Projekt nicht definiert ist.

@@ -42,11 +42,13 @@ Konflikte nie stillschweigend auflösen.
 
 ## Knowledge-Operationen
 
-Drei Operationen – ausgelöst durch User-Befehl oder Auto-Trigger:
+Framework-Operationen – ausgelöst durch User-Befehl oder Auto-Trigger:
 
 - `brain init` – Projekt initial erschließen (`.brain/prompts/init.md`)
 - `brain capture` – Erkenntnisse aus dieser Session festhalten (`.brain/prompts/capture.md`)
 - `brain audit` – Wissensbasis prüfen und bereinigen (`.brain/prompts/audit.md`)
+
+**Projekt-spezifische Operationen:** Jede weitere Datei `.brain/prompts/<befehl>.md` definiert automatisch `brain <befehl>`. Damit der Trigger zuverlässig erkannt wird, den Befehl zusätzlich hier in der Liste und in der `description` von `.cursor/rules/brain-protocol.mdc` eintragen.
 
 **Trigger-Hinweise (aktiv, nicht optional):**
 
