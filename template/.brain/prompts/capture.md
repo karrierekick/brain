@@ -1,18 +1,33 @@
 # Brain Capture
 
-Dieser Prompt wird ausgeführt wenn der User `brain capture` aufruft oder die KI es am Session-Ende vorschlägt.
+Dieser Prompt wird ausgeführt wenn der User `brain capture` aufruft oder die KI es am Session-Ende automatisch startet.
 Ziel: Dauerhaft nützliche Erkenntnisse aus dieser Session in die Wissensbasis einordnen.
+
+## Ausführungsmodus
+
+**Auto-Mode (Default):** Wenn `capture.confirmDefault` in `.brain/config.json` auf `false` steht (Default ab v2.2), läuft Capture autonom. Keine Nachfrage, keine Bestätigung – die KI prüft jeden Kandidaten gegen die harten Aufnahmekriterien und schreibt direkt.
+
+Voraussetzung für Auto-Mode: Die Aufnahmekriterien werden **konsequent streng** angewendet. Lieber zehnmal nichts schreiben als einmal schwache Doku.
+
+**Explizite Ausnahme – Rückfrage trotz Auto-Mode:** Nur bei `conflict`-Kandidaten (siehe Schritt 5), bei denen die Prioritätshierarchie keinen eindeutigen Sieger ergibt. In allen anderen Fällen autonom entscheiden.
 
 ## Aufnahmekriterien
 
-Ein Kandidat wird nur aufgenommen wenn alle drei zutreffen:
-1. Wiederverwendbar – nützlich über diese Session hinaus
-2. Nicht sauber aus dem Code ableitbar – kein offensichtliches Framework-Verhalten, keine trivialen Ableitungen
-3. Verhindert künftige Fehler oder Rückfragen
+Ein Kandidat wird nur aufgenommen wenn **alle drei** zutreffen:
 
-Wenn auch nur eine Bedingung nicht erfüllt ist: `reject`.
+1. **Nicht aus Code ableitbar** – grep, Glob oder eine Handvoll Datei-Reads liefern die Antwort nicht.
+2. **Wiederverwendbar** – Nutzen für realistische zukünftige Aufgaben, nicht nur diese Session.
+3. **Liefert konkreten Mehrwert** – mindestens einer dieser fünf Nutzen muss deutlich erkennbar sein:
+   - **Recherche-Ersparnis** – spart der KI in künftigen Sessions Such-/Leseaufwand, weil sie sonst grep/read wiederholen müsste.
+   - **Token-/Kosten-Reduktion** – kuratiertes Wissen ersetzt mehrere Tool-Aufrufe.
+   - **Besserer Kontext** – liefert Hintergrund, den die KI sonst erraten oder fehlinterpretieren würde.
+   - **Höhere Codequalität durch besseres Verständnis** – macht Zusammenhänge explizit, die zu saubereren Änderungen führen.
+   - **Design-Entscheidung explizit** – das Warum hinter Code, gewählte vs. verworfene Alternative, bewusste Constraints.
+
+Wenn auch nur eine der drei Bedingungen nicht zutrifft: `reject`.
 
 Lies vor dem Schreiben `.brain/config.json`, um mindestens diese Werte zu kennen:
+- `capture.confirmDefault`
 - `capture.minFactsForNewDomain`
 - `review.defaultDaysByStatus`
 - `files.glossary`
@@ -20,12 +35,16 @@ Lies vor dem Schreiben `.brain/config.json`, um mindestens diese Werte zu kennen
 ## Harte Ausschlussregeln
 
 Niemals aufnehmen, ohne Ausnahme:
-- Task-spezifische Details ohne Wiederverwendungswert
-- Framework-Standardverhalten
-- Code-Zustände ohne Abstraktion (z.B. "Datei X hat 150 Zeilen")
-- Einmalige Debug-Erkenntnisse
+- Task-spezifische Details ohne Wiederverwendungswert ("in dieser Session haben wir X gemacht")
+- Framework-Standardverhalten (Laravel-Resource-Routes, Vue-Lifecycle, etc.)
+- Code-Zustände ohne Abstraktion ("Datei X hat 150 Zeilen", "Funktion Y ruft Z auf")
+- Einmalige Debug-Erkenntnisse (konkrete Fix-Rezepte gehören in Commit-Messages)
 - Dateiaufzählungen ohne semantischen Mehrwert
 - Vermutungen ohne explizite Kennzeichnung als `<!-- unsicher -->`
+- Umformulierungen bestehender Einträge ohne neuen Inhalt
+- Erkenntnisse, deren Mehrwert-Kategorie (siehe oben) nicht klar benennbar ist
+
+**Faustregel:** Wenn die KI beim Kandidaten nicht in einem Satz sagen kann _welchen der fünf Mehrwerte er liefert_, ist es `reject`.
 
 ## Ablauf
 
@@ -45,12 +64,13 @@ Gehe die aktuelle Session durch und identifiziere:
 
 Pro Kandidat eine Kategorie vergeben:
 
-- `accept` – klar relevant, sicher korrekt, passt in bestehende Struktur
-- `review` – relevant aber unsicher, widersprüchlich oder schwer einzuordnen
-- `reject` – erfüllt Aufnahmekriterien nicht
+- `accept` – klar relevant, sicher korrekt, passt in bestehende Struktur, Mehrwert-Kategorie eindeutig benennbar
+- `reject` – erfüllt Aufnahmekriterien nicht (Default bei Unsicherheit)
 - `conflict` – widerspricht einem bestehenden Eintrag in der Wissensbasis
 
-Nur `accept` und `conflict` werden weiterverarbeitet. `review` dem User zeigen mit Hinweis warum unsicher. `reject` still verwerfen.
+Nur `accept` und `conflict` werden weiterverarbeitet. `reject` still verwerfen.
+
+Es gibt in v2.2 keine eigene `review`-Stufe mehr im Auto-Mode: unsichere Kandidaten werden `reject`. Wer sie trotzdem haben will, kann `brain capture` bei `confirmDefault: true` im Review-Modus ausführen.
 
 ### Schritt 3: Ziel bestimmen
 
@@ -60,79 +80,67 @@ Pro `accept`-Kandidat entscheiden:
 - `.brain/glossary.md` – neuer Begriff oder Korrektur eines bestehenden
 - Neue Domain-Datei – neues Feature das noch nicht erfasst ist
 - `PRIVATE.md` – persönlich, nicht team-relevant
-- `none` – kein echter Mehrwert nach nochmaliger Prüfung
+- `none` – kein echter Mehrwert nach nochmaliger Prüfung → `reject`
 
 Wenn ein relevanter Kandidat keiner bestehenden Domain sauber zugeordnet werden kann:
-- Coverage-Lücke markieren
-- Neue Domain-Datei nur anlegen wenn mindestens `capture.minFactsForNewDomain` eigenständige Fakten vorliegen
-- Sonst als Audit-Maßnahme notieren statt schwache Mini-Domain anzulegen
+- Coverage-Lücke als Audit-Maßnahme notieren
+- Neue Domain-Datei nur anlegen wenn mindestens `capture.minFactsForNewDomain` eigenständige, `accept`-taugliche Fakten vorliegen
+- Sonst `reject`, nicht schwache Mini-Domain bauen
 
 ### Schritt 4: Deduplizieren
 
 Betroffene Datei lesen und prüfen:
-- Bereits enthalten (gleich oder ähnlich)? → verwerfen
+- Bereits enthalten (gleich oder ähnlich)? → `reject`
 - Ergänzt bestehenden Eintrag? → einordnen, nicht neu anlegen
 - Widerspricht bestehendem Eintrag? → zu `conflict` hochstufen
 
-### Schritt 5: Konflikte behandeln
+### Schritt 5: Konflikte auflösen
 
-Für jeden `conflict`-Kandidaten:
+Für jeden `conflict`-Kandidaten die Prioritätshierarchie anwenden:
 
-```
-KONFLIKT: .brain/domains/kats-settings.md > Harte Constraints
-
-Bestehend: "PUT /api/user-settings/kats ist Partial-Patch, null entfernt Override"
-Neu (aus Session): "null setzt auf leeren String, nicht auf Config-Default zurück"
-
-Priorität prüfen:
-  User-Aussage in dieser Session schlägt Domain-Datei
-  Code-Verhalten schlägt Inferenz
-  Jüngere bestätigte Aussage schlägt ältere
-
-Empfehlung: bestehenden Eintrag ersetzen [j] / beide behalten mit Konflikt-Marker [k] / verwerfen [n]
-```
-
-**Prioritätshierarchie bei Konflikten:**
 1. Explizite User-Aussage in dieser Session
 2. Verifikation durch Code-Inspektion
 3. Bestehender Domain-Eintrag (verified)
 4. Inferenz aus Kontext
 
-Konflikte nie stillschweigend auflösen.
+Ist der Sieger eindeutig: **autonom** den unterlegenen Eintrag ersetzen. Im Commit-Log der Domain-Datei hinterlässt git die Spur.
 
-### Schritt 6: Vorschläge zeigen
+Ist der Sieger **nicht eindeutig** (z. B. zwei gleich starke Quellen widersprechen): dem User gebündelt zeigen und fragen. Nur hier darf der Auto-Mode pausieren.
 
-Alle `accept`-Kandidaten gebündelt zeigen:
+### Schritt 6: Schreiben
 
-```
-Capture-Vorschläge (3 Einträge):
-
-[1] accept → .brain/domains/indeed.md > Design-Entscheidungen
-    "Bewerbungen werden über Queue-Job verarbeitet um Indeed-API Rate-Limits einzuhalten."
-
-[2] accept → .brain/glossary.md
-    "Primärer Admin: User mit kleinster id und role = admin; für Admin-Overrides verwendet."
-
-[3] review → .brain/domains/imap-inbox.md > Stolpersteine
-    "Trash-Service löscht nach 30 Tagen – Basis unklar, aus Kontext erschlossen."
-    → Unsicher: nicht aus Code bestätigt. Aufnehmen?
-
-Alle bestätigen [j] | Einzeln [e] | Abbrechen [n]
-```
-
-### Schritt 7: Schreiben
-
-Nur nach Bestätigung.
+Direkt nach bestandener Qualitätsprüfung.
 
 Beim Schreiben:
 - `modified` immer auf heute setzen
-- `review_after` auf Basis von `.brain/config.json > review.defaultDaysByStatus` aktualisieren, wenn sich die Aussage einer Domain materiell geändert hat
-- `.brain/state.json > capture.lastRun` und `capture.lastResult` setzen (`ok` | `warn` | `conflict`)
+- `review_after` auf Basis von `.brain/config.json > review.defaultDaysByStatus` aktualisieren, wenn sich die Aussage einer Domain **materiell** geändert hat (nicht bei reinen Formulierungs-Updates)
+- `.brain/state.json > capture.lastRun` und `capture.lastResult` setzen:
+  - `ok` – Einträge geschrieben
+  - `skipped` – keine `accept`-Kandidaten, keine Änderungen an Dateien
+  - `conflict` – Durchlauf wegen ungeklärtem Konflikt pausiert
+
+### Schritt 7: Kurzbericht
+
+Eine knappe Zeile pro Änderung ausgeben (nicht mehr):
+
+```
+Brain capture: 2 Einträge (email-templates-communication, glossary), 5 verworfen, state → ok.
+```
+
+Wenn nichts geschrieben wurde:
+
+```
+Brain capture: keine Einträge mit Mehrwert gefunden, state → skipped.
+```
+
+Kein langer Bestätigungs-Dialog, keine Vorschau, keine Nachfragen – außer bei echtem Konflikt.
 
 ## Qualitätsregeln
 
-- Lieber `reject` als schwache Doku
+- **Im Zweifel reject.** Der Auto-Mode funktioniert nur mit strengem Filter.
 - Eine Zeile pro Fakt, kein erklärender Fließtext
-- Ziel-Datei immer begründen wenn nicht offensichtlich
-- Neue Domain-Datei nur anlegen wenn mindestens `capture.minFactsForNewDomain` eigenständige Fakten vorhanden
-- Wenn eine Coverage-Lücke erkannt wird, aber noch nicht genug Fakten vorliegen: nicht improvisieren, sondern für `brain audit` vormerken
+- Jeder `accept`-Kandidat kann in einem Satz seine Mehrwert-Kategorie benennen
+- Ziel-Datei immer begründet wählen
+- Neue Domain-Datei nur anlegen wenn mindestens `capture.minFactsForNewDomain` `accept`-taugliche Fakten vorhanden
+- Wenn eine Coverage-Lücke erkannt wird, aber noch nicht genug Fakten vorliegen: für `brain audit` vormerken, nicht improvisieren
+- Capture darf kein stilles Rewriting bestehender Einträge sein – nur Konflikt-Auflösung mit klarer Prioritäts-Begründung

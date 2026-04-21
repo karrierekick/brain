@@ -4,13 +4,33 @@ status: aktiv
 modified: YYYY-MM-DD
 review_after: YYYY-MM-DD
 tags: []
+watched_paths: []
 ---
+
+<!--
+status-Werte:
+  aktiv       – gepflegt, Grundlage für Entscheidungen
+  beta        – in Entwicklung, Details können sich ändern
+  stub        – Domain bekannt, Inhalt unvollständig (kurzes review_after)
+  stale       – bewusst nicht weiterentwickelt; vorhandenes Wissen noch nützlich, aber nicht Grundlage für neue Entscheidungen
+  eingestellt – Feature abgelöst/entfernt, Datei nur für Historie
+
+watched_paths:
+  Glob-Liste der Code-Pfade, die diese Domain betreffen (relativ zum Projekt-Root).
+  `brain audit` prüft per Git, ob seit `modified` an diesen Pfaden committed wurde,
+  und markiert die Datei dann als review-fällig.
+  Beispiel:
+    watched_paths:
+      - frontend/src/stores/userSettings.ts
+      - frontend/src/css/themes/**
+      - backend/app/Http/Controllers/UserSettingController.php
+-->
 
 ## Ziel
 Ein Satz: Was soll dieses Feature erreichen?
 
 ## Review-Auslöser
-Wann diese Datei geprüft werden muss: relevante Routen, zentrale Services, Datenmodell, Produktentscheidung oder externer Integrationsweg geändert.
+Freitext als Ergänzung zu `watched_paths`: fachliche Auslöser, die per Glob nicht erkennbar sind (z. B. „externe API-Vertragsänderung", „Produktentscheidung zu Rollenmodell"). Für dateibezogene Trigger ist `watched_paths` führend.
 
 ## Einstiegspunkte
 - Frontend: `src/...`

@@ -1,29 +1,33 @@
 {
-  "version": "2.0",
+  "version": "2.2",
   "project": "",
   "reader": {
     "maxAdditionalFilesBeforeCode": 3
   },
   "domains": [],
   "audit": {
-    "intervalDays": 14
+    "intervalDays": 14,
+    "gitActivityWindowDays": 90
   },
   "review": {
     "defaultDaysByStatus": {
       "aktiv": 60,
       "beta": 30,
+      "stub": 30,
+      "stale": 180,
       "eingestellt": 180
     }
   },
   "capture": {
     "autoSafeEnabled": true,
-    "confirmDefault": true,
+    "confirmDefault": false,
     "minFactsForNewDomain": 3
   },
   "files": {
     "core": "CLAUDE.md",
     "private": "PRIVATE.md",
     "domains": ".brain/domains/",
-    "glossary": ".brain/glossary.md"
+    "glossary": ".brain/glossary.md",
+    "reverseIndex": ".brain/_index.json"
   }
 }

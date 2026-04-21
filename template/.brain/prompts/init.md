@@ -142,13 +142,15 @@ status: aktiv
 modified: <YYYY-MM-DD>
 review_after: <YYYY-MM-DD>
 tags: [<tag1>, <tag2>]
+watched_paths:
+  - <relativer Pfad oder Glob>
 ---
 
 ## Ziel
 Ein Satz: Was soll dieses Feature erreichen?
 
 ## Review-Auslöser
-Wann diese Datei geprüft werden muss: relevante Routen, zentrale Services, Datenmodell, Produktentscheidung oder externer Integrationsweg geändert.
+Freitext-Ergänzung zu `watched_paths`: fachliche Auslöser, die per Glob nicht erkennbar sind (externe API-Vertragsänderung, Produktentscheidung, Rechtsgrundlage).
 
 ## Einstiegspunkte
 - Frontend: `src/...`
@@ -172,6 +174,10 @@ Konzeptuelle Missverständnisse die immer wieder zu falschen Lösungen führen �
 ## Stolpersteine
 Nicht-offensichtliche technische Fallstricke bei der Implementierung.
 ```
+
+**status-Werte:** `aktiv`, `beta`, `stub` (Domain bekannt, Inhalt unvollständig), `stale` (bewusst nicht weiterentwickelt, nicht als Entscheidungsgrundlage nutzen), `eingestellt`.
+
+**watched_paths:** Glob-Liste der Code-Pfade, die diese Domain betreffen. `brain audit` prüft per Git auf Commits seit `modified` und flaggt review-fällige Domains aktivitätsbasiert. Leere Liste nur mit Begründung im Dateikommentar (z. B. reine Business-Domain ohne direkten Code-Bezug).
 
 ---
 
