@@ -40,7 +40,7 @@ Freitext als Ergänzung zu `watched_paths`: fachliche Auslöser, die per Glob ni
 Abgrenzung zu ähnlichen Konzepten, Dateien oder Domänen die leicht verwechselt werden.
 
 ## Zusammenhänge
-Querverweise auf andere Domänen mit [[wiki-link]].
+Querverweise auf andere Domänen mit [[wiki-link]]. Einträge sind **bidirektional**: wenn diese Domain auf Domain B verweist, muss Domain B auch zurückverweisen. Stil: aufgabenorientiert — nicht „betrifft X", sondern „wenn Du an Y arbeitest, auch [[X]] laden".
 
 ## Design-Entscheidungen
 Bewusste Entscheidungen mit Begründung, die nicht aus dem Code erkennbar sind.

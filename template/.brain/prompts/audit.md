@@ -64,6 +64,7 @@ Cluster die unzugeordneten Pfade nach Verzeichnis/Modul und zeige die Top-5 als 
 - Unzugeordnete Pfade mit auffälliger Aktivität (aus Schritt 6)?
 - Begriffe in CLAUDE.md oder Domain-Dateien die nicht in glossary.md erklärt sind?
 - Hat CLAUDE.md Einträge die eigentlich Domain-Dateien sein sollten?
+- Sind alle `.brain/domains/*.md` (außer `_template.md`) im Domain-Index von `CLAUDE.md` gelistet? Fehlende Einträge als Coverage-Lücke melden und als auto-safe ergänzen.
 
 **Freshness – Sind Dateien veraltet?**
 - `review_after`-Datum überschritten?
@@ -78,6 +79,7 @@ Cluster die unzugeordneten Pfade nach Verzeichnis/Modul und zeige die Top-5 als 
 - Wiki-Link verweist auf nicht existierende Datei oder falschen Abschnitt?
 - Zwei Domains beschreiben dasselbe Konzept?
 - `watched_paths` einer Domain überlappen mit einer anderen, obwohl sie unterschiedliche Aussagen treffen?
+- Zusammenhänge-Einträge unidirektional? (Domain A verweist auf B, B verweist nicht zurück auf A) → als Minor-Befund melden, Gegeneintrag als auto-safe ergänzen.
 
 **Usefulness – Sind Aussagen konkret genug?**
 - Einträge die sich direkt aus dem Code ergeben (kein Mehrwert)?

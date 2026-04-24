@@ -78,7 +78,7 @@ Pro `accept`-Kandidat entscheiden:
 - `CLAUDE.md` – betrifft das gesamte Projekt (Design-Prinzip, globaler Constraint)
 - `.brain/domains/<name>.md` – betrifft eine bestehende Domäne
 - `.brain/glossary.md` – neuer Begriff oder Korrektur eines bestehenden
-- Neue Domain-Datei – neues Feature das noch nicht erfasst ist
+- Neue Domain-Datei – neues Feature das noch nicht erfasst ist → **CLAUDE.md Domain-Index gleichzeitig ergänzen** (Domain-Name, Kernaussage, „Datei laden wenn..."-Spalte)
 - `PRIVATE.md` – persönlich, nicht team-relevant
 - `none` – kein echter Mehrwert nach nochmaliger Prüfung → `reject`
 
@@ -114,6 +114,7 @@ Direkt nach bestandener Qualitätsprüfung.
 Beim Schreiben:
 - `modified` immer auf heute setzen
 - `review_after` auf Basis von `.brain/config.json > review.defaultDaysByStatus` aktualisieren, wenn sich die Aussage einer Domain **materiell** geändert hat (nicht bei reinen Formulierungs-Updates)
+- **Neue Zusammenhänge sind bidirektional:** Wenn ein neuer Zusammenhang zwischen Domain A und Domain B erfasst wird, prüfen ob Domain B bereits zurückverweist. Fehlt der Gegeneintrag, beide Dateien aktualisieren. Stil: aufgabenorientiert — „wenn Du an X arbeitest, auch [[Y]] laden", nicht nur ein abstrakter Link.
 - `.brain/state.json > capture.lastRun` und `capture.lastResult` setzen:
   - `ok` – Einträge geschrieben
   - `skipped` – keine `accept`-Kandidaten, keine Änderungen an Dateien
