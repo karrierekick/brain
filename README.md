@@ -5,11 +5,42 @@ Ein portables KI-Wissensbasis-System für Cursor-Projekte.
 - **Architektur-Rationale:** [DESIGN.md](./DESIGN.md) – warum das System so gebaut ist
 - **Versionshistorie:** [CHANGELOG.md](./CHANGELOG.md) – Änderungen und Migration
 
-## Was es macht
+## Was Brain ist
 
-Strukturierte Wissensbasis pro Projekt – speichert nur was nicht direkt aus dem Code ablesbar ist: Design-Entscheidungen, Constraints, Modul-Zusammenhänge, Begriffe.
+**Brain** ist ein **dateibasiertes, git-versioniertes Wissens-Framework** für Cursor/Claude-Projekte. Es kuratiert **implizites Projektwissen**, das im Code nicht zuverlässig steht: fachliche Begriffe, bewusste Design-Entscheidungen, Abgrenzungen zwischen Modulen, harte Constraints und typische Fehlannahmen.
 
-Ab v2.1 **aktivitätsbasiert**: Domains deklarieren `watched_paths` (Glob-Liste). `brain audit` prüft per Git, welche Domains seit der letzten Pflege Code-Änderungen haben, und markiert sie als review-fällig – nicht erst wenn ein Kalenderdatum abläuft.
+Brain ist **kein** Ersatz für Code-Lektüre, README oder API-Docs. Es ist die **schlanke Schicht darüber**, die eine KI **vor** breitem Glob/Grep laden soll, sobald eine Aufgabe Domänenlogik oder Projekt-Vokabular berührt.
+
+| Baustein              | Rolle für die KI                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `CLAUDE.md`           | Einstieg: Überblick, Prinzipien, **Domain-Index** (Trigger → welche Datei laden)                              |
+| `.brain/domains/*.md` | Kuratiertes Domänenwissen; Frontmatter: `watched_paths`, `status`, `modified`                                 |
+| `.brain/glossary.md`  | Einheitliche Begriffe                                                                                         |
+| `.brain/PROTOCOL.md`  | Vertrag: Lesestrategie, Skip-Regeln, Konflikt-Priorität, Auto-Capture                                         |
+| `.brain/_index.json`  | Reverse-Index **Pfad → Domain** (von `brain audit` generiert)                                                 |
+| `brain <befehl>`      | Strukturierte Pflege (`init`, `capture`, `audit`; weitere Befehle projekt-spezifisch unter `.brain/prompts/`) |
+
+### Echte Mehrwerte (wann Brain zahlt)
+
+Brain lohnt sich nur, wenn Einträge **mindestens einen** dieser Effekte klar liefern (Aufnahmefilter in `capture.md`):
+
+1. **Recherche-Ersparnis** – erspart wiederholtes Grep/Read (z. B. Theme-Persistenz → Domain statt viele Dateien).
+2. **Token-Reduktion** – kurze Domain ersetzt mehrere Tool-Runden.
+3. **Besserer Kontext** – Geschäftslogik, Quellen und bewusste Abgrenzungen explizit (z. B. zwei ähnliche Entitäten, die nicht verwechselt werden dürfen).
+4. **Höhere Codequalität** – Constraints verhindern falsche Änderungen (z. B. wo Geschäftslogik liegt, welche Modelle Soft Deletes nutzen).
+5. **Explizite Design-Entscheidungen** – Warum und was bewusst **nicht** gebaut ist.
+
+**Nicht** aufnehmen: Code-Zustände, Framework-Standardwissen, Session-Notizen, Dateiaufzählungen ohne Semantik. Brain ist ein Werkzeug gegen **falsche Annahmen**, kein Pflicht-Ritual bei trivialen Änderungen (Skip-Regeln in `PROTOCOL.md`).
+
+### Lesereihenfolge bei relevanter Aufgabe
+
+1. `CLAUDE.md` → Domain-Index oder `_index.json` (bei konkretem Pfad)
+2. Passende `.brain/domains/<name>.md` (max. 2–3 Brain-Dateien insgesamt)
+3. Optional `.brain/glossary.md`
+4. Dann gezielt Code lesen – nicht Brain per Glob/Grep rekonstruieren
+5. Nach Änderungen an `watched_paths`: **Auto-`brain capture`** am Session-Ende (strenger Mehrwert-Filter; nur bei Konflikten Rückfrage)
+
+Ab v2.1 **aktivitätsbasierte Pflege**: `brain audit` vergleicht Git-Commits an `watched_paths` mit `modified` und markiert Domains als review-fällig – unabhängig vom Kalender-`review_after`.
 
 ## Installation (einmalig pro Rechner)
 
@@ -33,13 +64,13 @@ brain init
 
 ## Befehle
 
-| Befehl | Was passiert |
-|---|---|
-| `brain install` | Framework-Dateien ins Projekt kopieren |
-| `brain init` | Projekt erschließen – Scan + Interview + Wissensbasis aufbauen |
-| `brain capture` | Erkenntnisse aus der Session festhalten |
-| `brain audit` | Wissensbasis auf Aktualität und Konsistenz prüfen |
-| `brain upgrade` | Framework-Dateien aktualisieren (Projekt-Daten bleiben) |
+| Befehl          | Was passiert                                                   |
+| --------------- | -------------------------------------------------------------- |
+| `brain install` | Framework-Dateien ins Projekt kopieren                         |
+| `brain init`    | Projekt erschließen – Scan + Interview + Wissensbasis aufbauen |
+| `brain capture` | Erkenntnisse aus der Session festhalten                        |
+| `brain audit`   | Wissensbasis auf Aktualität und Konsistenz prüfen              |
+| `brain upgrade` | Framework-Dateien aktualisieren (Projekt-Daten bleiben)        |
 
 ## Update (alle Rechner)
 

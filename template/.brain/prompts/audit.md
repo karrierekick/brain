@@ -94,21 +94,21 @@ Cluster die unzugeordneten Pfade nach Verzeichnis/Modul und zeige die Top-5 als 
 
 ### Kritisch
 - .brain/prompts/init.md verwendet ein anderes Domain-Schema als .brain/domains/_template.md [Basissystem]
-- .brain/domains/indeed.md: status „geplant", Feature ist implementiert [Freshness]
-- .brain/domains/imap-inbox.md widerspricht CLAUDE.md Zeile 8 [Consistency]
+- .brain/domains/external-api.md: status „geplant", Feature ist implementiert [Freshness]
+- .brain/domains/data-import.md widerspricht CLAUDE.md Zeile 8 [Consistency]
 
 ### Verbesserung
 - .brain/domains/user-settings.md: 12 Commits an watched_paths seit modified=2026-02-14 – review fällig [Freshness/Git]
-- .brain/domains/applicant-docs.md: watched_paths leer, obwohl src/composables/useApplicantDocumentOpener.ts klar zuordenbar [Coverage]
-- CLAUDE.md: Eintrag zu IMAP-Trash gehört in .brain/domains/imap-inbox.md [Coverage]
+- .brain/domains/document-upload.md: watched_paths leer, obwohl src/composables/useDocumentOpener.ts klar zuordenbar [Coverage]
+- CLAUDE.md: Eintrag zu Import-Fehlerbehandlung gehört in .brain/domains/data-import.md [Coverage]
 
 ### Coverage-Kandidaten (aktivitätsbasiert)
 - backend/app/Services/NotificationService.php (8 Commits, keiner Domain zugeordnet)
 - frontend/src/pages/ReportsPage.vue (5 Commits, keiner Domain zugeordnet)
 
 ### Minor
-- .brain/domains/applicant-docs.md: Wiki-Link [[user-settings]] ohne Zieldatei [Consistency]
-- .brain/domains/kats-settings.md: review_after überschritten [Freshness]
+- .brain/domains/document-upload.md: Wiki-Link [[user-settings]] ohne Zieldatei [Consistency]
+- .brain/domains/app-settings.md: review_after überschritten [Freshness]
 
 Ergebnis: warn
 ```
@@ -125,9 +125,9 @@ Gesamtergebnis: `ok` | `warn` | `broken`
 ```
 1. brain init und _template.md synchronisieren [confirm]
 2. user-settings.md überarbeiten, watched_paths-Aktivität einarbeiten [confirm]
-3. Widerspruch IMAP klären: Domain oder CLAUDE.md korrigieren [confirm]
-4. watched_paths in applicant-docs.md ergänzen [auto-safe falls eindeutig]
-5. Wiki-Link in applicant-docs.md reparieren [auto-safe]
+3. Widerspruch data-import klären: Domain oder CLAUDE.md korrigieren [confirm]
+4. watched_paths in document-upload.md ergänzen [auto-safe falls eindeutig]
+5. Wiki-Link in document-upload.md reparieren [auto-safe]
 ```
 
 ### Schritt 10: Schreiben und State aktualisieren

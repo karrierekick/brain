@@ -125,7 +125,7 @@ Beim Schreiben:
 Eine knappe Zeile pro Änderung ausgeben (nicht mehr):
 
 ```
-Brain capture: 2 Einträge (email-templates-communication, glossary), 5 verworfen, state → ok.
+Brain capture: 2 Einträge (notifications, glossary), 5 verworfen, state → ok.
 ```
 
 Wenn nichts geschrieben wurde:

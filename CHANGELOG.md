@@ -2,6 +2,21 @@
 
 Versionshistorie des Brain-Frameworks. Architektur-Rationale siehe [DESIGN.md](./DESIGN.md).
 
+## [2.4] – 2026-05-22
+
+### Added
+- **Bidirektionale Domain-Verweise** – `_template.md`, `capture.md` (Schreiben) und `audit.md` (Consistency-Check): Zusammenhänge mit `[[wiki-link]]` in beide Richtungen pflegen, aufgabenorientiert formuliert.
+- **`state.json`-Template** – `capture.lastRun` / `capture.lastResult` von Anfang an vorgesehen (konsistent mit `PROTOCOL.md`).
+
+### Changed
+- **`brain init`** – kein eingebettetes Domain-Duplikat mehr; verweist auf `.brain/domains/_template.md`. Domain-Index-Spalten `Domäne | Kernaussage | Datei laden wenn…` in Qualitätsregeln festgeschrieben.
+
+### Migration 2.3 → 2.4
+
+1. `brain upgrade` in betroffenen Projekten.
+2. Optional in `.brain/config.json`: `"version": "2.4"` setzen.
+3. Keine Pflichtänderungen an Domain-Inhalten; fehlende Gegeneinträge in Zusammenhängen können beim nächsten `brain audit` als Minor-Befund sichtbar werden.
+
 ## [2.3] – 2026-04-21
 
 ### Added

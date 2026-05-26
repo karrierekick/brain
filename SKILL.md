@@ -71,7 +71,7 @@ Aktualisiert nur die Framework-Dateien – Projekt-Daten bleiben unberührt.
 
 ## Projekt-spezifische brain-Befehle
 
-Jedes Projekt kann eigene Knowledge-Operationen definieren, indem es eine Prompt-Datei unter `.brain/prompts/<befehl>.md` anlegt. Beispiel: `brain check` in KATS läuft über `.brain/prompts/check.md`.
+Jedes Projekt kann eigene Knowledge-Operationen definieren, indem es eine Prompt-Datei unter `.brain/prompts/<befehl>.md` anlegt (z. B. `brain check` → `.brain/prompts/check.md`).
 
 Damit der Trigger von Cursor sicher erkannt wird, muss der neue Befehl an zwei Stellen auftauchen:
 

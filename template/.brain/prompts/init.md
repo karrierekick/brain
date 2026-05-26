@@ -127,53 +127,11 @@ Warte auf Bestätigung.
 - `.brain/state.json` → `init.lastRun` setzen
 
 Beim Anlegen von Domain-Dateien:
+- Struktur und Abschnitte aus `.brain/domains/_template.md` übernehmen (kein paralleles Schatten-Template in `init.md`)
 - `review_after` immer setzen
 - Wert standardmäßig aus `.brain/config.json > review.defaultDaysByStatus` ableiten
+- `watched_paths` aus Einstiegspunkten ableiten, wo Code-Pfade eindeutig sind
 - Wenn Status unklar ist: konservativ `aktiv` + kürzerer Review-Zeitraum oder `<!-- TODO: Status unklar -->`
-
----
-
-## Domain-Datei-Template
-
-```markdown
----
-domain: <bezeichner>
-status: aktiv
-modified: <YYYY-MM-DD>
-review_after: <YYYY-MM-DD>
-tags: [<tag1>, <tag2>]
-watched_paths:
-  - <relativer Pfad oder Glob>
----
-
-## Ziel
-Ein Satz: Was soll dieses Feature erreichen?
-
-## Review-Auslöser
-Freitext-Ergänzung zu `watched_paths`: fachliche Auslöser, die per Glob nicht erkennbar sind (externe API-Vertragsänderung, Produktentscheidung, Rechtsgrundlage).
-
-## Einstiegspunkte
-- Frontend: `src/...`
-- Backend: `app/...`
-
-## Nicht verwechseln mit
-Abgrenzung zu ähnlichen Konzepten, Dateien oder Domänen die leicht verwechselt werden.
-
-## Zusammenhänge
-Querverweise auf andere Domänen mit [[wiki-link]].
-
-## Design-Entscheidungen
-Bewusste Entscheidungen mit Begründung, die nicht aus dem Code erkennbar sind.
-
-## Harte Constraints
-Was gilt explizit und darf nicht gebrochen werden. Was wird bewusst vermieden.
-
-## Typische Fehlannahmen
-Konzeptuelle Missverständnisse die immer wieder zu falschen Lösungen führen – nicht das gleiche wie Stolpersteine.
-
-## Stolpersteine
-Nicht-offensichtliche technische Fallstricke bei der Implementierung.
-```
 
 **status-Werte:** `aktiv`, `beta`, `stub` (Domain bekannt, Inhalt unvollständig), `stale` (bewusst nicht weiterentwickelt, nicht als Entscheidungsgrundlage nutzen), `eingestellt`.
 
@@ -183,7 +141,7 @@ Nicht-offensichtliche technische Fallstricke bei der Implementierung.
 
 ## Qualitätsregeln
 
-- `CLAUDE.md` bleibt kurz: Projektüberblick max. 3 Sätze, Domain-Index als Tabelle
+- `CLAUDE.md` bleibt kurz: Projektüberblick max. 3 Sätze, Domain-Index als Tabelle `| Domäne | Kernaussage | Datei laden wenn… |` (Trigger-Spalte für KI-Routing)
 - Domain-Dateien beschreiben das **Warum**, nicht das Was (Was steht im Code)
 - Domain-Dateien müssen mit `_template.md` konsistent bleiben; kein eigenes Schatten-Template pflegen
 - Keine Datei-Listings, keine Framework-Selbstverständlichkeiten

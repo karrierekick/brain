@@ -2,6 +2,10 @@
   "init": {
     "lastRun": null
   },
+  "capture": {
+    "lastRun": null,
+    "lastResult": null
+  },
   "audit": {
     "lastRun": null,
     "lastResult": null

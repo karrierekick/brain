@@ -67,6 +67,12 @@ Die Härte des Filters ist die Bedingung für den Entfall der Bestätigung, nich
 
 **Nebenwirkung:** Knapper Session-End-Output („2 Einträge, 5 verworfen, state → ok" oder „skipped"). Keine Capture-Zeremonie im Chat.
 
+### Bidirektionale Domain-Verweise
+
+**Problem:** Einseitige `[[wiki-link]]`-Einträge in „Zusammenhänge" führen dazu, dass die KI aus Domain A Domain B mitlädt, aus B aber nicht zurück auf A – obwohl die Aufgabe von B aus dieselbe Querverbindung braucht.
+
+**Lösung:** Verweise sind **bidirektional** und **aufgabenorientiert** formuliert („wenn Du an Y arbeitest, auch [[X]] laden"). `brain capture` ergänzt fehlende Gegeneinträge beim Schreiben; `brain audit` meldet unidirektionale Links als Minor-Befund (auto-safe ergänzbar).
+
 ### Skip-Regeln für einfache Aufgaben (v2.2)
 
 **Problem:** Die Brain-Lektüre war in v2.1 reflexiv Pflicht, sobald irgendein `watched_paths`-Treffer vorlag – auch bei Tippfehler-Fixes oder trivialen Änderungen. Der Overhead (Domain-Datei laden, Glossar konsultieren) rechnete sich in diesen Fällen nicht.
